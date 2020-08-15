@@ -1,0 +1,60 @@
+name: teensy40
+
+on:
+  push:
+    paths-ignore:
+    - 'docs/**'
+    - '**.md'
+    branches: [ master ]
+
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/checkout@v2
+      with:
+        repository: PaulStoffregen/cores.git
+        path: ./deps/teensy-cores
+        fetch-depth: 1
+        ref: master
+
+    - uses: actions/checkout@v2
+      with:
+        repository: PaulStoffregen/SD.git
+        path: ./deps/SD
+        fetch-depth: 1
+        ref: master
+
+    - uses: actions/checkout@v2
+      with:
+        repository: PaulStoffregen/SPI.git
+        path: ./deps/SPI
+        fetch-depth: 1
+        ref: master
+
+#    - name: download dependencies
+#      run: sudo apt-get update && sudo apt-get install -yq libboost-test-dev
+
+    - name: download toolchain
+      run: |
+        curl  -L "https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2019q4/RC2.1/gcc-arm-none-eabi-9-2019-q4-major-x86_64-linux.tar.bz2" --output /tmp/gcc-arm-none-eabi.tar.bz2
+        mkdir -p /opt
+        cd /opt
+        tar xjf /tmp/gcc-arm-none-eabi.tar.bz2
+        rm /tmp/gcc-arm-none-eabi.tar.bz2
+        echo "/opt/gcc-arm-none-eabi-9-2019-q4-major/bin"
+
+    - name: build
+      run: ./build.sh
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: hex file
+        path: cmake-build-debug/arduino-tftpianoview.hex

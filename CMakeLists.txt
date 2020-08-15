@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(tftpianoview)
+project(arduino-tftpianoview)
 
 set(CMAKE_CXX_STANDARD 11)
 
@@ -141,7 +141,7 @@ set(ARDUINO_LIB_ROOT "${DEPSPATH}/")
 import_arduino_library(${ARDUINO_LIB_ROOT} Adafruit_GFX)
 import_arduino_library(${ARDUINO_LIB_ROOT} SPI)
 
-teensy_add_executable(arduino-tftpiano
+teensy_add_executable(arduino-tftpianoview
         main.cpp        
         TFTPianoDisplay.h
         TFTPianoDisplay.cpp)
