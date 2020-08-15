@@ -141,6 +141,7 @@ set(ARDUINO_LIB_ROOT "${DEPSPATH}/")
 import_arduino_library(${ARDUINO_LIB_ROOT} Adafruit_GFX)
 import_arduino_library(${ARDUINO_LIB_ROOT} SPI)
 import_arduino_library(${ARDUINO_LIB_ROOT} Adafruit_BusIO)
+import_arduino_library(${ARDUINO_LIB_ROOT} Wire)
 
 
 teensy_add_executable(arduino-tftpianoview

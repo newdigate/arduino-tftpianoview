@@ -53,6 +53,13 @@ jobs:
         fetch-depth: 1
         ref: master
 
+    - uses: actions/checkout@v2
+      with:
+        repository: paulstoffregen/wire
+        path: ./deps/Wire
+        fetch-depth: 1
+        ref: master
+
 #    - name: download dependencies
 #      run: sudo apt-get update && sudo apt-get install -yq libboost-test-dev
 
