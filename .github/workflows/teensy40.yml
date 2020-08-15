@@ -5,10 +5,10 @@ on:
     paths-ignore:
     - 'docs/**'
     - '**.md'
-    branches: [ master ]
+    branches: [ master, st7735_t3 ]
 
   pull_request:
-    branches: [ master ]
+    branches: [ master, st7735_t3 ]
 
 jobs:
   build:
