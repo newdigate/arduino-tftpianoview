@@ -39,6 +39,12 @@ jobs:
         fetch-depth: 1
         ref: master
 
+    - uses: actions/checkout@v2
+      with:
+        repository: adafruit/Adafruit-GFX-Library
+        path: ./deps/Adafruit_GFX
+        fetch-depth: 1
+        ref: master
 #    - name: download dependencies
 #      run: sudo apt-get update && sudo apt-get install -yq libboost-test-dev
 
