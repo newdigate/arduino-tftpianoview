@@ -45,6 +45,15 @@ jobs:
         path: ./deps/Adafruit_GFX
         fetch-depth: 1
         ref: master
+
+    - uses: actions/checkout@v2
+      with:
+        repository: adafruit/Adafruit_BusIO
+        path: ./deps/Adafruit_BusIO
+        fetch-depth: 1
+        ref: master
+
+        https://github.com/adafruit/Adafruit_BusIO.git
 #    - name: download dependencies
 #      run: sudo apt-get update && sudo apt-get install -yq libboost-test-dev
 
