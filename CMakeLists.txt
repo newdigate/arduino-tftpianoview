@@ -16,9 +16,12 @@ set(CPU_CORE_SPEED 600000000 CACHE STRING "Set to 24000000, 48000000, 72000000 o
 
 set(CPU cortex-m7)
 
-set(COMPILERPATH "/opt/gcc-arm-none-eabi-9-2019-q4-major/bin/")
-set(DEPSPATH "/home/runner/work/arduino-tftpianoview/arduino-tftpianoview/deps")
-set(COREPATH "${DEPSPATH}/teensy-cores/teensy4/")
+#set(COMPILERPATH "/opt/gcc-arm-none-eabi-9-2019-q4-major/bin/")
+#set(DEPSPATH "/home/runner/work/arduino-tftpianoview/arduino-tftpianoview/deps")
+#set(COREPATH "${DEPSPATH}/teensy-cores/teensy4/")
+set(COMPILERPATH "/Users/nicholasnewdigate/Downloads/gcc-arm-none-eabi-7-2017-q4-major/bin/")
+set(DEPSPATH "/Applications/Teensyduino.app/Contents/Java/hardware/teensy/avr/libraries/")
+set(COREPATH "/Applications/Teensyduino.app/Contents/Java/hardware/teensy/avr/cores/teensy4/")
 
 # Normal toolchain configuration
 #
@@ -138,11 +141,8 @@ macro(import_arduino_library LIB_ROOT LIB_NAME)
 
 endmacro(import_arduino_library)
 set(ARDUINO_LIB_ROOT "${DEPSPATH}/")
-import_arduino_library(${ARDUINO_LIB_ROOT} Adafruit_GFX)
 import_arduino_library(${ARDUINO_LIB_ROOT} SPI)
-import_arduino_library(${ARDUINO_LIB_ROOT} Adafruit_BusIO)
-import_arduino_library(${ARDUINO_LIB_ROOT} Wire)
-
+import_arduino_library(${ARDUINO_LIB_ROOT} ST7735_t3)
 
 teensy_add_executable(arduino-tftpianoview
         main.cpp        

@@ -5,12 +5,8 @@
 #endif
 
 #include "TFTPianoDisplay.h"
-const int16_t ST7735_WHITE = 0xFFFF;
-const int16_t ST7735_BLUE = 0x19F0;
-const int16_t ST7735_BLACK = 0x0000;
-const int16_t ST7735_RED = 0xF920;
 
-TFTPianoDisplay::TFTPianoDisplay(Adafruit_GFX &tft, byte octaves, byte startOctave, byte x, byte y){
+TFTPianoDisplay::TFTPianoDisplay(ST7735_t3 &tft, byte octaves, byte startOctave, byte x, byte y){
     _tft = &tft;
     _x = x;
     _y = y;

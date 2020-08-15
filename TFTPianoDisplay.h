@@ -3,7 +3,7 @@
 
 #if ARDUINO >= 100
 #include "Arduino.h"
-#include <Adafruit_GFX.h>    // Core graphics library
+#include <ST7735_t3.h>    // Core graphics library
 #else
 #include "mock_arduino.h"
 #include "Adafruit/Adafruit_GFX.h"    // Core graphics library
@@ -12,7 +12,7 @@
 class TFTPianoDisplay
 {
 public:
-    TFTPianoDisplay(Adafruit_GFX &tft, byte octaves, byte startOctave, byte x, byte y);
+    TFTPianoDisplay(ST7735_t3 &tft, byte octaves, byte startOctave, byte x, byte y);
     void setPosition(byte x, byte y);
     void keyDown(byte key);
     void keyUp(byte key);
@@ -20,7 +20,7 @@ public:
     bool displayNeedsUpdating();
 
 private:
-    Adafruit_GFX *_tft;
+    ST7735_t3 *_tft;
     byte _x, _y;
     byte _height, _width;
     byte _offsetKeyZero;
