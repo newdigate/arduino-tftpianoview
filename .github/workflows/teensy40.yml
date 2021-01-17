@@ -3,8 +3,8 @@ name: teensy40
 on:
   push:
     paths-ignore:
-    - 'docs/**'
-    - '**.md'
+      - 'docs/**'
+      - '**.md'
     branches: [ master, st7735_t3 ]
 
   pull_request:
