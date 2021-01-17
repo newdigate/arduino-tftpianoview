@@ -1,13 +1,8 @@
 #ifndef TFTPianoDisplay_h
 #define TFTPianoDisplay_h
 
-#if ARDUINO >= 100
 #include "Arduino.h"
 #include <ST7735_t3.h>    // Core graphics library
-#else
-#include "mock_arduino.h"
-#include "Adafruit/Adafruit_GFX.h"    // Core graphics library
-#endif
 
 class TFTPianoDisplay
 {

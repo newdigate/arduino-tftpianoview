@@ -1,11 +1,5 @@
-#if ARDUINO >= 100
 #include "Arduino.h"
-#else
-#include "mock_arduino.h"
-#endif
-
 #include "TFTPianoDisplay.h"
-
 TFTPianoDisplay::TFTPianoDisplay(ST7735_t3 &tft, byte octaves, byte startOctave, byte x, byte y){
     _tft = &tft;
     _x = x;
