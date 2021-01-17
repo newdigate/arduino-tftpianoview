@@ -28,6 +28,10 @@ jobs:
         repository: newdigate/midi-smf-reader
         path: deps/midi-smf-reader
 
+    - uses: actions/checkout@v2
+      with:
+        repository: newdigate/teensy-quencer
+        path: deps/teensy-quencer
 
     - uses: actions/checkout@v2
       with:
