@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
-project(arduino_tftpianoview_example)
+project(arduino_tftpianoview_example_first)
 set(CMAKE_CXX_STANDARD 11)
-set(SOURCE_FILES basic.cpp)
-set(APP_NAME basic)
+
+set(SOURCE_FILES first.cpp)
+set(APP_NAME first)
 
 option(OPT_BUILD_FOR_LINUX "Build the example for linux" OFF)
 option(OPT_BUILD_FOR_OPENGL_EMULATOR "Build the example for linux/opengl" ON)
@@ -52,10 +53,9 @@ else()
     include(../../teensy.options.cmake.in)
     include(../../teensy.build.cmake.in)
     include(../examples.cmake.in)
-
-    import_arduino_library(${DEPSPATH} midi-smf-reader/src)
-    import_arduino_library(${DEPSPATH} teensy-quencer/src)
-
-    teensy_add_executable(arduino_tftpianoview_example_basic
-            ${SOURCE_FILES})
+    teensy_add_executable(arduino_tftpianoview_example_first
+            first.cpp)
 endif()
+
+
+

@@ -1,15 +1,24 @@
 cmake_minimum_required(VERSION 3.5)
-
 project(arduino_tftpianoview C CXX)
+set(arduino_tftpianoview_VERSION 1.0.0)
 
 set(CMAKE_CXX_STANDARD 11)
 
-find_package(teensy_x86_stubs)
-include_directories(${teensy_x86_stubs_INCLUDE_DIR})
+option(OPT_BUILD_FOR_LINUX "Build for linux emulator" ON)
+if (OPT_BUILD_FOR_LINUX)
+	set(BUILD_FOR_LINUX 1)
+endif()
 
-find_package(teensy_st7735_linux_stubs)
-include_directories(${teensy_st7735_linux_stubs_INCLUDE_DIR})
-
-add_library(common STATIC
-		TFTPianoDisplay.h
+set(SOURCE_FILES
 		TFTPianoDisplay.cpp)
+
+set(HEADER_FILES
+		TFTPianoDisplay.h)
+
+if (DEFINED BUILD_FOR_LINUX)
+	include(CMakeLists.linux.cmake.in)
+	add_custom_target(installarduino
+			"${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_SOURCE_DIR}/../cmake/install_arduino_library.cmake")
+else()
+	include(CMakeLists.teensy.cmake.in)
+endif()

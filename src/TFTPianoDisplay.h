@@ -7,7 +7,10 @@
 class TFTPianoDisplay
 {
 public:
-    TFTPianoDisplay(ST7735_t3 &tft, byte octaves, byte startOctave, byte x, byte y);
+    TFTPianoDisplay(ST7735_t3 &tft, byte octaves, byte startOctave, byte x, byte y) :
+            TFTPianoDisplay(tft, octaves, startOctave, x, y, 6) {}
+
+    TFTPianoDisplay(ST7735_t3 &tft, byte octaves, byte startOctave, byte x, byte y, byte asize_factor);
     void setPosition(byte x, byte y);
     void keyDown(byte key);
     void keyUp(byte key);
@@ -30,30 +33,32 @@ private:
     void setWasKeyPressed(byte key, bool value);
     bool isAnyKeyPressed(byte key);
 
-    const int _sizeFactor = 6;
-    int _whiteKeyWidth = (35*10)/_sizeFactor;
-    int _blackKeyWidth1 = (21*10)/_sizeFactor;
-    int _blackKeyWidth2 = (20*10)/_sizeFactor;
-    int _two_thirds_key_height = (70*2/3)/_sizeFactor;
-    int _one_thirds_key_height = (70*1/3)/_sizeFactor;
-    int _key_offset_c = 0;
-    int _key_offset_c_sharp = (_blackKeyWidth1)/10;
-    int _key_offset_c_sharp_end = (2*_blackKeyWidth1)/10;
-    int _key_offset_d = (_whiteKeyWidth)/10;
-    int _key_offset_d_sharp = (_blackKeyWidth1*3)/10;
-    int _key_offset_d_sharp_end = (4*_blackKeyWidth1)/10;
-    int _key_offset_e = (_whiteKeyWidth*2)/10;
-    int _key_offset_f = (_whiteKeyWidth*3)/10;
-    int _key_offset_f_sharp = _key_offset_f + (_blackKeyWidth2)/10;
-    int _key_offset_f_sharp_end = _key_offset_f_sharp + (_blackKeyWidth2)/10;
-    int _key_offset_g = (_whiteKeyWidth*4)/10;
-    int _key_offset_g_sharp = _key_offset_f + (_blackKeyWidth2*3)/10;
-    int _key_offset_g_sharp_end = _key_offset_g_sharp + (_blackKeyWidth2)/10;
-    int _key_offset_a = (_whiteKeyWidth*5)/10;
-    int _key_offset_a_sharp = _key_offset_f + (_blackKeyWidth2*5)/10;
-    int _key_offset_a_sharp_end = _key_offset_a_sharp + (_blackKeyWidth2)/10;
-    int _key_offset_b = (_whiteKeyWidth*6)/10;
-    int _key_offset_b_end = ((_whiteKeyWidth*7)/10) - 1;
+    void setSizeFactor(int asizeFactor);
+
+    int _sizeFactor;
+    int _whiteKeyWidth;
+    int _blackKeyWidth1;
+    int _blackKeyWidth2;
+    int _two_thirds_key_height ;
+    int _one_thirds_key_height;
+    int _key_offset_c;
+    int _key_offset_c_sharp;
+    int _key_offset_c_sharp_end ;
+    int _key_offset_d;
+    int _key_offset_d_sharp;
+    int _key_offset_d_sharp_end;
+    int _key_offset_e;
+    int _key_offset_f;
+    int _key_offset_f_sharp;
+    int _key_offset_f_sharp_end;
+    int _key_offset_g ;
+    int _key_offset_g_sharp;
+    int _key_offset_g_sharp_end ;
+    int _key_offset_a;
+    int _key_offset_a_sharp;
+    int _key_offset_a_sharp_end;
+    int _key_offset_b;
+    int _key_offset_b_end;
 };
 
 #endif
