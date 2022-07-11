@@ -1,48 +1,58 @@
-message("building for linux...")
-add_definitions(-DBUILD_FOR_LINUX)
+cmake_minimum_required(VERSION 3.5)
+project(arduino_tftpianoview C CXX)
+set(arduino_tftpianoview_VERSION 1.0.0)
 
-set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include/arduino_tftpianoview/)
-set(LIB_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/lib/arduino_tftpianoview )
+set(CMAKE_CXX_STANDARD 17)
 
 find_package(teensy_x86_stubs)
 include_directories(${teensy_x86_stubs_INCLUDE_DIR})
 
-find_package(teensy_st7735_linux_stubs)
-include_directories(${teensy_st7735_linux_stubs_INCLUDE_DIR})
+find_package(teensy_gfx)
+include_directories(${teensy_gfx_INCLUDE_DIR})
 
-add_library(arduino_tftpianoview SHARED STATIC
-        ${HEADER_FILES}
-        ${SOURCE_FILES}
-)
+find_package(teensy_x86_encoder_stubs)
+include_directories(${teensy_x86_encoder_stubs_INCLUDE_DIR})
+
+set(INCLUDE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/include/arduino_tftpianoview/)
+#set(LIB_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/lib/arduino_tftpianoview)
+set(SOURCE_FILES
+		TFTPianoDisplay.cpp
+		)
+
+set(HEADER_FILES
+		TFTPianoDisplay.h
+		)
+
+add_library(arduino_tftpianoview STATIC SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
 set_target_properties(arduino_tftpianoview PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 include(CMakePackageConfigHelpers)
 configure_package_config_file(../cmake/arduino_tftpianoview.cmake.in
-        ${CMAKE_CURRENT_BINARY_DIR}/arduino_tftpianoviewConfig.cmake
-        INSTALL_DESTINATION ${LIB_INSTALL_DIR}/arduino_tftpianoview/cmake
-        PATH_VARS)
+		${CMAKE_CURRENT_BINARY_DIR}/arduino_tftpianoviewConfig.cmake
+		INSTALL_DESTINATION ${LIB_INSTALL_DIR}/arduino_tftpianoview/cmake
+		PATH_VARS)
 
 write_basic_package_version_file(
-        ${CMAKE_CURRENT_BINARY_DIR}/arduino_tftpianoviewConfigVersion.cmake
-        VERSION ${arduino_tftpianoview_VERSION}
-        COMPATIBILITY SameMajorVersion )
+		${CMAKE_CURRENT_BINARY_DIR}/arduino_tftpianoviewConfigVersion.cmake
+		VERSION ${arduino_tftpianoview_VERSION}
+		COMPATIBILITY SameMajorVersion )
 
 install(TARGETS arduino_tftpianoview DESTINATION
-        LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-        ARCHIVE DESTINATION ${LIB_INSTALL_DIR}
-        PUBLIC_HEADER DESTINATION "include/arduino_tftpianoview"
-        )
+		LIBRARY DESTINATION ${LIB_INSTALL_DIR}
+		ARCHIVE DESTINATION ${LIB_INSTALL_DIR}
+		PUBLIC_HEADER DESTINATION "include/arduino_tftpianoview"
+		)
 
 install(FILES
-        ${CMAKE_CURRENT_BINARY_DIR}/arduino_tftpianoviewConfig.cmake
-        ${CMAKE_CURRENT_BINARY_DIR}/arduino_tftpianoviewConfigVersion.cmake
-        ${CMAKE_CURRENT_SOURCE_DIR}/../cmake/uninstall.cmake
-        DESTINATION "lib/cmake/arduino_tftpianoview" )
+		${CMAKE_CURRENT_BINARY_DIR}/arduino_tftpianoviewConfig.cmake
+		${CMAKE_CURRENT_BINARY_DIR}/arduino_tftpianoviewConfigVersion.cmake
+		${CMAKE_CURRENT_SOURCE_DIR}/../cmake/uninstall.cmake
+		DESTINATION "lib/cmake/arduino_tftpianoview" )
 
 ##
 # copied from: https://gist.github.com/royvandam/3033428
 # Add uninstall target
 # Requirements: Copy the uninstall.cmake file to the appropriate CMAKE_MODULE_PATH.
 add_custom_target(uninstall
-        "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_SOURCE_DIR}/cmake/uninstall.cmake")
+		"${CMAKE_COMMAND}" -P "../cmake/uninstall.cmake")

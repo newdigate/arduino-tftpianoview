@@ -1,7 +1,13 @@
-message("building for teensy...")
-include(../teensy.options.cmake.in)
-include(../teensy.build.cmake.in)
-teensy_add_library(
-        arduino_tftpianoview
-        ${HEADER_FILES}
-        ${SOURCE_FILES})
+cmake_minimum_required(VERSION 3.10)
+project(arduino_tftpianoview C CXX)
+
+set(SOURCE_FILES
+		TFTPianoDisplay.cpp)
+
+set(HEADER_FILES
+		TFTPianoDisplay.h)
+
+
+teensy_add_library(arduino_tftpianoview ${SOURCE_FILES})
+#teensy_target_link_libraries(launch_ctrl Audio USBHost_t36 ST7735_t3  arm_math SD SdFat  SPI SerialFlash  Wire  cores )
+#target_link_libraries(teensy_gfx.elf m stdc++)
