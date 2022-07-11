@@ -26,6 +26,11 @@ jobs:
 
       - uses: actions/checkout@v2
         with:
+          repository: newdigate/teensy-gfx
+          path: teensy-gfx
+
+      - uses: actions/checkout@v2
+        with:
           repository: newdigate/midi-smf-reader
           path: midi-smf-reader
 
@@ -39,6 +44,8 @@ jobs:
           cd teensy-x86-stubs && mkdir cmake-build-$BUILD_TYPE && cd cmake-build-$BUILD_TYPE && cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE .. && sudo make install
           cd ../..
           cd midi-smf-reader && mkdir cmake-build-$BUILD_TYPE && cd cmake-build-$BUILD_TYPE && cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE .. && sudo make install
+          cd ../..
+          cd teensy-gfx && mkdir cmake-build-$BUILD_TYPE && cd cmake-build-$BUILD_TYPE && cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE .. && sudo make install
           cd ../..
           cd teensy-st7735-linux-stubs && mkdir cmake-build-$BUILD_TYPE && cd cmake-build-$BUILD_TYPE && cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE .. && sudo make install
 
