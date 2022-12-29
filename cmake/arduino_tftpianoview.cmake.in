@@ -1,9 +1,9 @@
 set(arduino_tftpianoview_VERSION "@arduino_tftpianoview_VERSION@")
-set(arduino_tftpianoview_LIBS arduino_tftpianoview -L@LIB_INSTALL_DIR@)
+#set(arduino_tftpianoview_LIBS arduino_tftpianoview -L@LIB_INSTALL_DIR@)
 
 @PACKAGE_INIT@
 
 set_and_check(arduino_tftpianoview_INCLUDE_DIR "@INCLUDE_INSTALL_DIR@")
-set_and_check(arduino_tftpianoview_DIR "@LIB_INSTALL_DIR@")
+#set_and_check(arduino_tftpianoview_DIR "@LIB_INSTALL_DIR@")
 
 check_required_components(arduino_tftpianoview)

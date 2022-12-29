@@ -56,6 +56,11 @@ public:
         //Serial.printf("OFF: %d,%d ::%x\n", byteNumberOfKey, bitNumberOfKey, _keysWhichArePressed[byteNumberOfKey]);
         _shouldUpdatePiano = true;
     }
+    void drawFullPiano()  {
+        _forceFullKeyboardRedraw = true;
+        drawPiano();
+    }
+    
     void drawPiano()  {
         #define     RGB565_RED          0xF800
         #define     RGB565_BLACK        0x0000

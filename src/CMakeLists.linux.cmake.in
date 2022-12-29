@@ -23,7 +23,7 @@ set(HEADER_FILES
 		TFTPianoDisplay.h
 		)
 
-add_library(arduino_tftpianoview STATIC SHARED ${HEADER_FILES} ${SOURCE_FILES})
+add_library(arduino_tftpianoview INTERFACE ${HEADER_FILES} ${SOURCE_FILES})
 
 set_target_properties(arduino_tftpianoview PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
