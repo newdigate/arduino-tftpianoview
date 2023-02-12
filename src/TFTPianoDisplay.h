@@ -21,6 +21,15 @@ public:
             _oldkeysWhichArePressed[i] = 0x00;
         }
     }
+
+    void reset() {
+        _shouldUpdatePiano = true;
+        for (unsigned int i=0; i < sizeof(_keysWhichArePressed); i++) {
+            _keysWhichArePressed[i] = 0x00;
+            _oldkeysWhichArePressed[i] = 0x00;
+        }
+    }
+    
     void setPosition(unsigned char x, unsigned char y) {
         _x = x;
         _y = y;
@@ -203,6 +212,10 @@ public:
     }
     bool displayNeedsUpdating() {
         return _shouldUpdatePiano || _forceFullKeyboardRedraw;
+    }
+    void setBaseOctave(uint8_t octave) {
+        _startOctave = octave;
+        _forceFullKeyboardRedraw = true;
     }
 
 private:
