@@ -1,7 +1,4 @@
 message("building for teensy...")
-include(../teensy.options.cmake.in)
-include(../teensy.build.cmake.in)
 teensy_add_library(
         arduino_tftpianoview
-        ${HEADER_FILES}
         ${SOURCE_FILES})
