@@ -1,4 +1,3 @@
-add_definitions(-DBUILD_FOR_OPENGL_EMULATOR)
 add_definitions(-DGL_SILENCE_DEPRECATION)
 
 #brew install pkg-config
@@ -19,7 +18,7 @@ elseif(UNIX AND NOT APPLE)
     find_package(X11 REQUIRED)
     # note that the order is important for setting the libs
     # use pkg-config --libs $(pkg-config --print-requires --print-requires-private glfw3) in a terminal to confirm
-    set(LIBS ${GLFW3_LIBRARY} X11 Xrandr Xi Xxf86vm GL dl pthread freetype GLEW glfw)
+    set(LIBS ${GLFW3_LIBRARY} X11 Xrandr Xi GL dl pthread freetype GLEW glfw)
     set (CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE} -ldl")
 elseif(APPLE)
     INCLUDE_DIRECTORIES(/System/Library/Frameworks)
