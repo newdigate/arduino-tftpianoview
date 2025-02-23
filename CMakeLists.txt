@@ -17,8 +17,6 @@ ELSE ()
     import_arduino_library_git(SD https://github.com/PaulStoffregen/SD.git Juse_Use_SdFat src)
     import_arduino_library_git(ST7735_t3 https://github.com/PaulStoffregen/ST7735_t3.git master src)
     import_arduino_library_git(TeensyGFX https://github.com/newdigate/teensy-gfx.git main src)
-    import_arduino_library_git(MidiSMFReader https://github.com/newdigate/midi-smf-reader noinstall src)
-    import_arduino_library_git(TeensySequencer https://github.com/newdigate/teensy-quencer master src)
 ENDIF ()
 
 add_subdirectory(src)
