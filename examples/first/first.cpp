@@ -1,6 +1,6 @@
 #include <ST7735_t3.h> // Hardware-specific library
 #include "TFTPianoDisplay.h"
-
+#include <ST7735_t3View.h>
 #ifdef BUILD_FOR_OPENGL_EMULATOR
 #include "st7735_opengl.h"
 st7735_opengl tft = st7735_opengl(true, 10);
@@ -14,19 +14,22 @@ void my_yield() {
 #define TFT_DC    2  //  but certain pairs must NOT be used: 2+10, 6+9, 20+23, 21+22
 #define TFT_RST   255 // RST can use any pin
 ST7735_t3 tft = ST7735_t3(TFT_CS, TFT_DC, TFT_RST);
+
+
+ST7735_t3View view(tft);
 #endif
 
-TFTPianoDisplay pianoDisplay1(tft, 2, 3, 0, 0); //tft, byte octaves, byte startOctave, byte x, byte y
-TFTPianoDisplay pianoDisplay2(tft, 2, 3, 0, 16, 5); //tft, byte octaves, byte startOctave, byte x, byte y
-TFTPianoDisplay pianoDisplay3(tft, 2, 3, 0, 48, 4); //tft, byte octaves, byte startOctave, byte x, byte y
-TFTPianoDisplay pianoDisplay4(tft, 1, 3, 0, 70, 3); //tft, byte octaves, byte startOctave, byte x, byte y
+TFTPianoDisplay pianoDisplay1(view, 2, 3, 0, 0); //tft, byte octaves, byte startOctave, byte x, byte y
+TFTPianoDisplay pianoDisplay2(view, 2, 3, 0, 16, 5); //tft, byte octaves, byte startOctave, byte x, byte y
+TFTPianoDisplay pianoDisplay3(view, 2, 3, 0, 48, 4); //tft, byte octaves, byte startOctave, byte x, byte y
+TFTPianoDisplay pianoDisplay4(view, 1, 3, 0, 70, 3); //tft, byte octaves, byte startOctave, byte x, byte y
 
 bool useFrameBuffer = true;
 u_long lastMillisKey1,lastMillisKey2, lastMillisKey3, lastMillisKey4  = 0;
 byte key1, key2, key3, key4 = 35;
 
 void setup() {
-#ifdef BUILD_FOR_OPENGL_EMULATOR
+#ifdef BUILD_FOR_LINUX
     initialize_mock_arduino();
     yield_impl = my_yield;
 #endif
@@ -104,7 +107,7 @@ void loop() {
 
 }
 
-#ifdef BUILD_FOR_OPENGL_EMULATOR
+#ifdef BUILD_FOR_LINUX
 int main() {
     setup();
     while (!tft.shouldClose()) {

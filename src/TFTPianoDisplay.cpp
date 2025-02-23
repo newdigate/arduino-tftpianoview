@@ -1,40 +1,43 @@
-#include "Arduino.h"
 #include "TFTPianoDisplay.h"
-TFTPianoDisplay::TFTPianoDisplay(ST7735_t3 &tft, byte octaves, byte startOctave, byte x, byte y, byte asize_factor){
-    _tft = &tft;
+
+TFTPianoDisplay::TFTPianoDisplay(View &tft, unsigned char octaves, unsigned char startOctave, unsigned char x,
+                                 unsigned char y, unsigned char size) : _tft(tft){
     _x = x;
     _y = y;
-    setSizeFactor(asize_factor);
+    setSizeFactor(size);
     _height = 32;
     _width = 128;
     _octaves = octaves;
     _startOctave = startOctave;
     _offsetKeyZero = ( 12 * _startOctave );
     _shouldUpdatePiano = true;
-
     for (unsigned int i=0; i < sizeof(_keysWhichArePressed); i++) {
         _keysWhichArePressed[i] = 0x00;
         _oldkeysWhichArePressed[i] = 0x00;
     }
 }
 
-bool TFTPianoDisplay::displayNeedsUpdating() {
-    return _shouldUpdatePiano || _forceFullKeyboardRedraw;
+void TFTPianoDisplay::reset() {
+    _shouldUpdatePiano = true;
+    for (unsigned int i=0; i < sizeof(_keysWhichArePressed); i++) {
+        _keysWhichArePressed[i] = 0x00;
+        _oldkeysWhichArePressed[i] = 0x00;
+    }
 }
 
-void TFTPianoDisplay::setPosition(byte x, byte y) {
+void TFTPianoDisplay::setPosition(unsigned char x, unsigned char y) {
     _x = x;
     _y = y;
 }
 
-void TFTPianoDisplay::keyDown(byte key) {
+void TFTPianoDisplay::keyDown(unsigned char key) {
     if (key < _offsetKeyZero) return;
     if (key >= _offsetKeyZero+(_octaves*12)) return;
 
-    byte index = key - _offsetKeyZero;
+    unsigned char index = key - _offsetKeyZero;
 
-    byte byteNumberOfKey = index / 8;
-    byte bitNumberOfKey = index % 8;
+    unsigned char byteNumberOfKey = index / 8;
+    unsigned char bitNumberOfKey = index % 8;
 
     //Serial.printf("ON: %d,%d -%d\n", byteNumberOfKey, bitNumberOfKey, key);
 
@@ -45,13 +48,13 @@ void TFTPianoDisplay::keyDown(byte key) {
     _shouldUpdatePiano = true;
 }
 
-void TFTPianoDisplay::keyUp(byte key) {
+void TFTPianoDisplay::keyUp(unsigned char key) {
     if (key < _offsetKeyZero) return;
     if (key >= _offsetKeyZero+(_octaves*12)) return;
 
-    byte index = key - _offsetKeyZero;
-    byte byteNumberOfKey = index / 8;
-    byte bitNumberOfKey = index % 8;
+    unsigned char index = key - _offsetKeyZero;
+    unsigned char byteNumberOfKey = index / 8;
+    unsigned char bitNumberOfKey = index % 8;
 
     //Serial.printf("before OFF: %d,%d ::%x\n", byteNumberOfKey, bitNumberOfKey, b);
     bitClear( _keysWhichArePressed[byteNumberOfKey], bitNumberOfKey);
@@ -60,38 +63,16 @@ void TFTPianoDisplay::keyUp(byte key) {
     _shouldUpdatePiano = true;
 }
 
-bool TFTPianoDisplay::isKeyPressed(byte key) {
-    if (key < _offsetKeyZero) return false;
-    if (key >= _offsetKeyZero+(_octaves*12)) return false;
-
-    byte index = key - _offsetKeyZero;
-    byte byteNumberOfKey = index / 8;
-    byte bitNumberOfKey = index % 8;
-    return bitRead( _keysWhichArePressed[byteNumberOfKey], bitNumberOfKey);
-}
-
-bool TFTPianoDisplay::wasKeyPressed(byte key) {
-    if (key < _offsetKeyZero) return false;
-    if (key >= _offsetKeyZero+(_octaves*12)) return false;
-
-    byte index = key - _offsetKeyZero;
-    byte byteNumberOfKey = index / 8;
-    byte bitNumberOfKey = index % 8;
-    return bitRead( _oldkeysWhichArePressed[byteNumberOfKey], bitNumberOfKey);
-}
-void TFTPianoDisplay::setWasKeyPressed(byte key, bool value) {
-    if (key < _offsetKeyZero) return;
-    if (key >= _offsetKeyZero+(_octaves*12)) return;
-
-    byte index = key - _offsetKeyZero;
-    byte byteNumberOfKey = index / 8;
-    byte bitNumberOfKey = index % 8;
-    bitWrite( _oldkeysWhichArePressed[byteNumberOfKey], bitNumberOfKey, value);
+void TFTPianoDisplay::drawFullPiano() {
+    _forceFullKeyboardRedraw = true;
+    drawPiano();
 }
 
 void TFTPianoDisplay::drawPiano() {
-
-    for (unsigned int octave=0; octave < _octaves; octave++) {
+#define     RGB565_RED          0xF800
+#define     RGB565_BLACK        0x0000
+#define     RGB565_WHITE        0xFFFF
+    for (int octave=0; octave < _octaves; octave++) {
         const int octaveOffset = (octave * _whiteKeyWidth * 7)/10;
 
         for (int i = 0; i < 12; i++) {
@@ -109,148 +90,130 @@ void TFTPianoDisplay::drawPiano() {
             }
 
             if (add) {
-                int16_t color = isDown ? ST7735_RED : ST7735_WHITE;
-                int16_t color2 = isDown ? ST7735_RED : ST7735_BLACK;
+                int16_t color = isDown ? RGB565_RED : RGB565_WHITE;
+                int16_t color2 = isDown ? RGB565_RED : RGB565_BLACK;
 
                 switch (i % 12) {
                     case 0: //c
-                        _tft->fillRect(_x + octaveOffset + _key_offset_c, _y,
-                                       _key_offset_c_sharp, _two_thirds_key_height,
-                                       color);
+                        _tft.fillRect(_x + octaveOffset + _key_offset_c, _y,
+                                      _key_offset_c_sharp, _two_thirds_key_height,
+                                      color);
 
-                        _tft->fillRect(_x + octaveOffset + _key_offset_c, _y + _two_thirds_key_height,
-                                       _key_offset_d-_key_offset_c-1, _one_thirds_key_height,
-                                       color);
+                        _tft.fillRect(_x + octaveOffset + _key_offset_c, _y + _two_thirds_key_height,
+                                      _key_offset_d-_key_offset_c-1, _one_thirds_key_height,
+                                      color);
                         break;
 
                     case 2: //d
 
-                        _tft->fillRect(_x + octaveOffset + _key_offset_c_sharp_end, _y,
-                                       _key_offset_d_sharp - _key_offset_c_sharp_end,  _two_thirds_key_height,
-                                       color);
+                        _tft.fillRect(_x + octaveOffset + _key_offset_c_sharp_end, _y,
+                                      _key_offset_d_sharp - _key_offset_c_sharp_end,  _two_thirds_key_height,
+                                      color);
 
-                        _tft->fillRect(_x + octaveOffset + _key_offset_d, _y + _two_thirds_key_height,
-                                       _key_offset_e-_key_offset_d-1, _one_thirds_key_height,
-                                       color);
+                        _tft.fillRect(_x + octaveOffset + _key_offset_d, _y + _two_thirds_key_height,
+                                      _key_offset_e-_key_offset_d-1, _one_thirds_key_height,
+                                      color);
                         break;
 
                     case 4: //e
-                        _tft->fillRect(_x + octaveOffset + _key_offset_d_sharp_end, _y,
-                                       _key_offset_f-_key_offset_d_sharp_end-1, _two_thirds_key_height,
-                                       color);
+                        _tft.fillRect(_x + octaveOffset + _key_offset_d_sharp_end, _y,
+                                      _key_offset_f-_key_offset_d_sharp_end-1, _two_thirds_key_height,
+                                      color);
 
-                        _tft->fillRect(_x + octaveOffset + _key_offset_e, _y + _two_thirds_key_height,
-                                       _key_offset_f-_key_offset_e-1, _one_thirds_key_height,
-                                       color);
+                        _tft.fillRect(_x + octaveOffset + _key_offset_e, _y + _two_thirds_key_height,
+                                      _key_offset_f-_key_offset_e-1, _one_thirds_key_height,
+                                      color);
                         break;
 
                     case 5: //f
-                        _tft->fillRect(_x + octaveOffset + _key_offset_f, _y,
-                                       _key_offset_f_sharp-_key_offset_f, _two_thirds_key_height,
-                                       color);
+                        _tft.fillRect(_x + octaveOffset + _key_offset_f, _y,
+                                      _key_offset_f_sharp-_key_offset_f, _two_thirds_key_height,
+                                      color);
 
-                        _tft->fillRect(_x + octaveOffset + _key_offset_f, _y + _two_thirds_key_height,
-                                       _key_offset_g-_key_offset_f-1, _one_thirds_key_height,
-                                       color);
+                        _tft.fillRect(_x + octaveOffset + _key_offset_f, _y + _two_thirds_key_height,
+                                      _key_offset_g-_key_offset_f-1, _one_thirds_key_height,
+                                      color);
                         break;
 
                     case 7: //g
-                        _tft->fillRect(_x + octaveOffset + _key_offset_f_sharp_end, _y,
-                                       _key_offset_g_sharp - _key_offset_f_sharp_end, _two_thirds_key_height,
-                                       color);
+                        _tft.fillRect(_x + octaveOffset + _key_offset_f_sharp_end, _y,
+                                      _key_offset_g_sharp - _key_offset_f_sharp_end, _two_thirds_key_height,
+                                      color);
 
-                        _tft->fillRect(_x + octaveOffset + _key_offset_g, _y + _two_thirds_key_height,
-                                       _key_offset_a-_key_offset_g-1, _one_thirds_key_height,
-                                       color);
+                        _tft.fillRect(_x + octaveOffset + _key_offset_g, _y + _two_thirds_key_height,
+                                      _key_offset_a-_key_offset_g-1, _one_thirds_key_height,
+                                      color);
                         break;
 
                     case 9: // a
-                       _tft->fillRect(_x + octaveOffset + _key_offset_g_sharp_end, _y,
-                                       _key_offset_a_sharp - _key_offset_g_sharp_end, _two_thirds_key_height,
-                                       color);
+                        _tft.fillRect(_x + octaveOffset + _key_offset_g_sharp_end, _y,
+                                      _key_offset_a_sharp - _key_offset_g_sharp_end, _two_thirds_key_height,
+                                      color);
 
-                        _tft->fillRect(_x + octaveOffset + _key_offset_a, _y + _two_thirds_key_height,
-                                       _key_offset_b-_key_offset_a-1, _one_thirds_key_height,
-                                       color);
+                        _tft.fillRect(_x + octaveOffset + _key_offset_a, _y + _two_thirds_key_height,
+                                      _key_offset_b-_key_offset_a-1, _one_thirds_key_height,
+                                      color);
                         break;
 
                     case 11: // b white note
-                            _tft->fillRect(_x + octaveOffset + _key_offset_a_sharp_end, _y,
-                                           _key_offset_b_end-_key_offset_a_sharp_end, _two_thirds_key_height,
-                                           color);
+                        _tft.fillRect(_x + octaveOffset + _key_offset_a_sharp_end, _y,
+                                      _key_offset_b_end-_key_offset_a_sharp_end, _two_thirds_key_height,
+                                      color);
 
-                        _tft->fillRect(_x + octaveOffset + _key_offset_b, _y + _two_thirds_key_height,
-                                       _key_offset_b_end-_key_offset_b, _one_thirds_key_height,
-                                       color);
+                        _tft.fillRect(_x + octaveOffset + _key_offset_b, _y + _two_thirds_key_height,
+                                      _key_offset_b_end-_key_offset_b, _one_thirds_key_height,
+                                      color);
                         break;
 
 /*--------------------------------------------------------------------------------------*/
                     case 1: // c#
-                        _tft->fillRect(_x + octaveOffset + _key_offset_c_sharp, _y,
-                                       _blackKeyWidth1/10, _two_thirds_key_height,
-                                       color2);
+                        _tft.fillRect(_x + octaveOffset + _key_offset_c_sharp, _y,
+                                      _blackKeyWidth1/10, _two_thirds_key_height,
+                                      color2);
                         break;
 
                     case 3: // d#
-                        _tft->fillRect(_x + octaveOffset + _key_offset_d_sharp, _y,
-                                       _blackKeyWidth1/10, _two_thirds_key_height,
-                                       color2);
+                        _tft.fillRect(_x + octaveOffset + _key_offset_d_sharp, _y,
+                                      _blackKeyWidth1/10, _two_thirds_key_height,
+                                      color2);
                         break;
 
                     case 6: // f#
-                        _tft->fillRect(_x + octaveOffset + _key_offset_f_sharp, _y,
-                                       _blackKeyWidth2/10, _two_thirds_key_height,
-                                       color2);
+                        _tft.fillRect(_x + octaveOffset + _key_offset_f_sharp, _y,
+                                      _blackKeyWidth2/10, _two_thirds_key_height,
+                                      color2);
                         break;
 
                     case 8: // g#
-                        _tft->fillRect(_x + octaveOffset + _key_offset_g_sharp, _y,
-                                       _blackKeyWidth2/10, _two_thirds_key_height,
-                                       color2);
+                        _tft.fillRect(_x + octaveOffset + _key_offset_g_sharp, _y,
+                                      _blackKeyWidth2/10, _two_thirds_key_height,
+                                      color2);
                         break;
 
                     case 10: // a#
-                        _tft->fillRect(_x + octaveOffset + _key_offset_a_sharp, _y,
-                                       _blackKeyWidth2/10, _two_thirds_key_height,
-                                       color2);
+                        _tft.fillRect(_x + octaveOffset + _key_offset_a_sharp, _y,
+                                      _blackKeyWidth2/10, _two_thirds_key_height,
+                                      color2);
                         break;
                 }
             }
         }
     }
-    
+
     for (int j=0; j<22; j++)
         _oldkeysWhichArePressed[j] = _keysWhichArePressed[j];
-    
+
     if(_forceFullKeyboardRedraw)
         _forceFullKeyboardRedraw = false;
 
     _shouldUpdatePiano = false;
 }
 
-void TFTPianoDisplay::setSizeFactor(int asizeFactor) {
-    _sizeFactor = asizeFactor;
-    _whiteKeyWidth = (35 * 10) / _sizeFactor;
-    _blackKeyWidth1 = (21 * 10) / _sizeFactor;
-    _blackKeyWidth2 = (20 * 10) / _sizeFactor;
-    _two_thirds_key_height = (70 * 2 / 3) / _sizeFactor;
-    _one_thirds_key_height = (70 * 1 / 3) / _sizeFactor;
-    _key_offset_c = 0;
-    _key_offset_c_sharp = (_blackKeyWidth1) / 10;
-    _key_offset_c_sharp_end = (2 * _blackKeyWidth1) / 10;
-    _key_offset_d = (_whiteKeyWidth) / 10;
-    _key_offset_d_sharp = (_blackKeyWidth1 * 3) / 10;
-    _key_offset_d_sharp_end = (4 * _blackKeyWidth1) / 10;
-    _key_offset_e = (_whiteKeyWidth * 2) / 10;
-    _key_offset_f = (_whiteKeyWidth * 3) / 10;
-    _key_offset_f_sharp = _key_offset_f + (_blackKeyWidth2) / 10;
-    _key_offset_f_sharp_end = _key_offset_f_sharp + (_blackKeyWidth2) / 10;
-    _key_offset_g = (_whiteKeyWidth * 4) / 10;
-    _key_offset_g_sharp = _key_offset_f + (_blackKeyWidth2 * 3) / 10;
-    _key_offset_g_sharp_end = _key_offset_g_sharp + (_blackKeyWidth2) / 10;
-    _key_offset_a = (_whiteKeyWidth * 5) / 10;
-    _key_offset_a_sharp = _key_offset_f + (_blackKeyWidth2 * 5) / 10;
-    _key_offset_a_sharp_end = _key_offset_a_sharp + (_blackKeyWidth2) / 10;
-    _key_offset_b = (_whiteKeyWidth * 6) / 10;
-    _key_offset_b_end = ((_whiteKeyWidth * 7) / 10) - 1;
+bool TFTPianoDisplay::displayNeedsUpdating() {
+    return _shouldUpdatePiano || _forceFullKeyboardRedraw;
+}
+
+void TFTPianoDisplay::setBaseOctave(uint8_t octave) {
+    _startOctave = octave;
+    _forceFullKeyboardRedraw = true;
 }

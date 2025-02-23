@@ -19,29 +19,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/checkout@v2
-        with:
-          repository: newdigate/teensy-x86-stubs
-          path: teensy-x86-stubs
-
-      - uses: actions/checkout@v2
-        with:
-          repository: newdigate/midi-smf-reader
-          path: midi-smf-reader
-
-      - uses: actions/checkout@v2
-        with:
-          repository: newdigate/teensy-st7735-linux-stubs
-          path: teensy-st7735-linux-stubs
-
-      - name: Make and Install Dependencies
-        run: |
-          cd teensy-x86-stubs && mkdir cmake-build-$BUILD_TYPE && cd cmake-build-$BUILD_TYPE && cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE .. && sudo make install
-          cd ../..
-          cd midi-smf-reader && mkdir cmake-build-$BUILD_TYPE && cd cmake-build-$BUILD_TYPE && cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE .. && sudo make install
-          cd ../..
-          cd teensy-st7735-linux-stubs && mkdir cmake-build-$BUILD_TYPE && cd cmake-build-$BUILD_TYPE && cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE .. && sudo make install
-
       - name: Create Build Environment
         run: cmake -E make_directory ${{github.workspace}}/build
 
